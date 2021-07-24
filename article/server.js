@@ -15,12 +15,15 @@ app.use(express.static('public'));
 mongoose.connect("mongodb://localhost:27017/person",{
     useNewUrlParser:true
 });
+
+//schema
 const articleSchema = {
     name: String,
     // title:String
     age: Number,
     gender: String
 };
+
 // get request:
 app.get('/',(req,res)=>{
     Article.find((err,found)=>{
@@ -43,7 +46,40 @@ app.post('/details',(req,res)=>{
     Detail.save();
 });
 
-//items is the collections name.
+//delete request
+app.delete('/details',(req,res)=>{
+    Article.deleteOne({ name:"RajniKant"},(err)=>{  //deleting besed on certain conditions
+        !err ? res.send("deleted"): res.send(err);
+    });
+});
+
+// variable inside the route.
+// make a specific request using passing the variable
+app.get('/articles/:nameOfUser', (req, res) => {
+    Article.findOne({ name : req.params.nameOfUser},(err,nameFound)=>{
+        if(err){
+            console.log(err);
+        }else{
+            res.send(nameFound);
+        }
+    })
+})
+
+
+// PUT request 
+app.put('/articles/:nameOfuser',(req,res)=>{
+    Article.update(
+        { name: req.params.nameOfuser},
+        {name:req.body.NAME,age : req.body.AGE,gender:req.body.GENDER },
+        {overwrite : true}, 
+        (err)=>{
+            err ? console.log(err): res.send("UpDated");
+        })
+})
+
+
+
+//persons is the collections name.
 const Article=mongoose.model("persons",articleSchema);
 app.listen(PORT, () => {
     console.log(`Running on PORT ${PORT}`);
