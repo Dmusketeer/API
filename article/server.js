@@ -15,10 +15,17 @@ app.use(express.static('public'));
 mongoose.connect("mongodb://localhost:27017/person",{
     useNewUrlParser:true
 });
+const articleSchema = {
+    name: String,
+    // title:String
+    age: Number,
+    gender: String
+};
+// get request:
 app.get('/',(req,res)=>{
     Article.find((err,found)=>{
         if(found){
-                // console.log(found);
+                // console.log(found)
                 res.send(found);
         }else{
             console.log(err);
@@ -26,12 +33,15 @@ app.get('/',(req,res)=>{
     })
 })
 
-const articleSchema={
-    name:String, 
-    // title:String
-    age:Number,
-    gender:String
-};
+// post request:
+app.post('/details',(req,res)=>{
+    const Detail = new Article({
+        name:req.body.name,
+        age: req.body.age,
+        gender: req.body.gender
+    }); 
+    Detail.save();
+});
 
 //items is the collections name.
 const Article=mongoose.model("persons",articleSchema);
