@@ -46,9 +46,10 @@ app.post('/details',(req,res)=>{
     Detail.save();
 });
 
-//delete request
-app.delete('/details',(req,res)=>{
-    Article.deleteOne({ name:"RajniKant"},(err)=>{  //deleting besed on certain conditions
+//delete a specific values:
+//delete request 
+app.delete('/details/:userName',(req,res)=>{
+    Article.deleteOne({ name:req.params.userName},(err)=>{  //deleting besed on certain conditions
         !err ? res.send("deleted"): res.send(err);
     });
 });
@@ -75,12 +76,21 @@ app.put('/articles/:nameOfuser',(req,res)=>{
         (err)=>{
             err ? console.log(err): res.send("UpDated");
         })
-})
+});
 
 
+// PATCH request:
+app.patch('/articles/:userNAME', (req, res) => {
+    Article.update(
+        { name: req.params.userNAME },
+        { $set: {age : req.body.AGE}},
+        (err) => {
+            err ? console.log(err) : res.send("Sucessfull");
+        })
+});
 
 //persons is the collections name.
 const Article=mongoose.model("persons",articleSchema);
 app.listen(PORT, () => {
     console.log(`Running on PORT ${PORT}`);
-})
+});
